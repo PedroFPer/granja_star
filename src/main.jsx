@@ -5,20 +5,24 @@ import { createBrowserRouter,RouterProvider } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import DadosGranja from './pages/DadosGranja.jsx'
-import ProtectedRoute from "./protectedRoute/ProtectedRoute.jsx"
+import ProtectedRouteDados from "./protectedRoute/ProtectedRouteDados.jsx";
+import ProtectedRouteLogin from "./protectedRoute/ProtectedRouteLogin.jsx";
 
 
 const router = createBrowserRouter([
   {
     path: "/granja_star",
-    element: <App />,
+    element: (
+      <ProtectedRouteLogin>
+        <App />
+      </ProtectedRouteLogin>),
   },
   {
     path: "/granja_star/dados",
     element: (
-      <ProtectedRoute>
+      <ProtectedRouteDados>
         <DadosGranja />
-      </ProtectedRoute>
+      </ProtectedRouteDados>
     ),
   },
 ]);
