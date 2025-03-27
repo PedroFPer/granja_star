@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './estilos/App.css'
+import FormLogin from './componentes/FormLogin'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from './context/UserContext.jsx'
+import { signInWithEmailAndPassword } from 'firebase/auth/cordova';
+import {auth} from './firebase/FirebaseConfig.js'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { setUser } = useUser();
+  const [ email,setEmail ] = useState("");
+  const [ passaword, setPassaword] = useState("");
+  const [ error, setError ] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const userCredencial = await signInWithEmailAndPassword(
+        auth,
+        email,
+        passaword
+      );
+
+      const user = userCredencial.user;
+      setUser(user);
+
+      navigate("/granja_star/dados");
+    } catch (error) {
+      setError("Erro em fazer o login. Verifique suas credenciais")
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="conteiner_principal">
+        <h1>Login Granja Star</h1>
+
+        <FormLogin
+          email={email}
+          setEmail={setEmail}
+          passaword={passaword}
+          setPassaword={setPassaword}
+          handleLogin={handleLogin}
+        />
+
+        {error && <p>{error}</p>}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
 export default App
