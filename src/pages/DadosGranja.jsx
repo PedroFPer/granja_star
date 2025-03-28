@@ -2,23 +2,21 @@ import { useUser } from "../context/UserContext.jsx";
 import "../estilos/App.css";
 import ListaDados from "../componentes/ListaDados.jsx";
 import { useState, useEffect } from "react";
-import { database } from "../firebase/FirebaseConfig.js"; // Banco de dados importado corretamente
-import { ref, onValue } from "firebase/database"; // A importação correta do Firebase Database
+import { database } from "../firebase/FirebaseConfig.js";
+import { ref, onValue } from "firebase/database";
+import { getAuth, signOut } from "firebase/auth";
 
 function DadosGranja() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [dados, setDados] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [erro, setErro] = useState(null);
+  const [loading, setLoading] = useState(true); 
+
 
   useEffect(() => {
-    // Referência ao banco de dados Firebase para ler os dados
     const dadosRef = ref(database, "/dados");
 
-    // Escutando os dados em tempo real
     const unsubscribe = onValue(dadosRef, (snapshot) => {
       if (snapshot.exists()) {
-        // Verifique se os dados existem
         setDados(snapshot.val());
         setLoading(false);
       } else {
@@ -27,12 +25,31 @@ function DadosGranja() {
       }
     });
 
-    // Limpeza do listener
     return () => unsubscribe();
-  }, [user]); // O efeito roda sempre que o usuário mudar
+  }, []); 
+
+  function logout() {
+    const auth = getAuth();
+
+    // Deslogando o usuário do Firebase
+    signOut(auth)
+      .then(() => {
+        console.log("Usuário deslogado com sucesso do Firebase");
+        setUser(null); // Limpa o estado no contexto
+      })
+      .catch((error) => {
+        console.error("Erro ao deslogar do Firebase:", error);
+      });
+  }
 
   return (
-    <div>{loading ? <p>Carregando...</p> : <ListaDados dados={dados} />}</div>
+    <div>
+      {loading ? (
+        <p>Carregando...</p>
+      ) : (
+        <ListaDados dados={dados} logout={logout} />
+      )}
+    </div>
   );
 }
 
