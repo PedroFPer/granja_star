@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './context/UserContext.jsx'
 import { signInWithEmailAndPassword } from 'firebase/auth/cordova';
-import {auth} from './firebase/FirebaseConfig.js'
+import { auth } from './firebase/FirebaseConfig.js'
+
 
 
 function App() {
@@ -36,8 +37,6 @@ function App() {
   return (
     <>
       <div className="conteiner_principal">
-        <h1>Login Granja Star</h1>
-
         <FormLogin
           email={email}
           setEmail={setEmail}
