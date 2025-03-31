@@ -3,21 +3,23 @@ import "../estilos/DadosGranja.css";
 import ListaDados from "../componentes/ListaDados.jsx";
 import { useState, useEffect } from "react";
 import { database } from "../firebase/FirebaseConfig.js";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, update } from "firebase/database";
 import { getAuth, signOut } from "firebase/auth";
 
 function DadosGranja() {
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true); 
+  const [estadoLuz, setEstadoLuz] = useState(false);
+  const dadosRef = ref(database, "/dados");
 
 
   useEffect(() => {
-    const dadosRef = ref(database, "/dados");
-
+    
     const unsubscribe = onValue(dadosRef, (snapshot) => {
       if (snapshot.exists()) {
         setDados(snapshot.val());
+        setEstadoLuz(snapshot.val().estadoLuz);
         setLoading(false);
       } else {
         console.log("Nenhum dado encontrado");
@@ -28,10 +30,20 @@ function DadosGranja() {
     return () => unsubscribe();
   }, []); 
 
+   const gerecEstLuz = async (e) => {
+     e.preventDefault();
+     try {
+       const novoEstadoLuz = !estadoLuz; 
+      setEstadoLuz(novoEstadoLuz);
+      await update(dadosRef, { estadoLuz: novoEstadoLuz });
+     } catch {
+       console.error("Erro em atualziar o usuario")
+     }
+     
+   };
+
   function logout() {
     const auth = getAuth();
-
-    // Deslogando o usuário do Firebase
     signOut(auth)
       .then(() => {
         console.log("Usuário deslogado com sucesso do Firebase");
@@ -47,7 +59,12 @@ function DadosGranja() {
       {loading ? (
         <p>Carregando...</p>
       ) : (
-        <ListaDados dados={dados} logout={logout} />
+        <ListaDados
+          dados={dados}
+          logout={logout}
+          gerecEstLuz={gerecEstLuz}
+          estadoLuz={estadoLuz}
+        />
       )}
     </div>
   );

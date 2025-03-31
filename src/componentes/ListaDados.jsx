@@ -1,21 +1,8 @@
-import { useState, useEffect } from "react";
 import logoGranja from "../assets/granja_logo_150x150.png";
 import luzLigada from "../assets/ON(200 x 80 px).png";
 import luzDesligada from "../assets/OFF(200 x 80 px).png";
 
-function ListaDados({ dados, logout }) {
-  const [estadoLuz, setEstadoLuz] = useState(false);
-  
-  useEffect(() => {
-    if (dados) {
-      setEstadoLuz(dados.estadoLuz);
-    }
-  }, [dados]);
-
-  const gerecEstLuz = () => {
-    setEstadoLuz((prev) => !prev);
-  };
-
+function ListaDados({ dados, logout, gerecEstLuz,estadoLuz}) {
   return (
     <div id="conteiner_lista_dados">
       <figure>
@@ -29,12 +16,12 @@ function ListaDados({ dados, logout }) {
 
         <article className="conteiner_gener_dados">
           <p>Temperatura:</p>
-          <p>{dados ? dados.temper : "Carregando..."}</p>
+          <p>{dados ? dados.temper : "Carregando..."} C</p>
         </article>
 
         <article className="conteiner_gener_dados">
           <p>Umidade:</p>
-          <p>{dados ? dados.umidade : "Carregando..."}</p>
+          <p>{dados ? dados.umidade : "Carregando..."}%</p>
         </article>
 
         <article className="conteiner_gener_dados">
