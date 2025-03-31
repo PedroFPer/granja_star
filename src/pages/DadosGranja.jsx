@@ -1,5 +1,5 @@
 import { useUser } from "../context/UserContext.jsx";
-import "../estilos/App.css";
+import "../estilos/DadosGranja.css";
 import ListaDados from "../componentes/ListaDados.jsx";
 import { useState, useEffect } from "react";
 import { database } from "../firebase/FirebaseConfig.js";
@@ -43,7 +43,7 @@ function DadosGranja() {
   }
 
   return (
-    <div>
+    <div className="conteiner_principal">
       {loading ? (
         <p>Carregando...</p>
       ) : (
