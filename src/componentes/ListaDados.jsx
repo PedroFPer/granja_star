@@ -37,7 +37,7 @@ function ListaDados({ dados, logout, gerecEstLuz,estadoLuz}) {
         </article>
       </section>
 
-      <button onClick={logout}>Sair</button>
+      <button className="button_generic" onClick={logout}>Sair</button>
     </div>
   );
 }
